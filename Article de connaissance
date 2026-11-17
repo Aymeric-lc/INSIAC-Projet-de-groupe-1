@@ -2,4 +2,56 @@ Diagnostiquer une erreur DNS sur une VM Linux
 
 Public cible : Technicien support N1
 
-Depuis PAR-LNX-01, tester l’accès à http://10.10.20.20, relever le résultat, puis contrôler le service glpi-agent et ses journaux. En cas d’échec, affecter le ticket au groupe Administrateurs N2 avec la preuve du test.
+Depuis PAR-LNX-01, tester l’accès à http://10.10.20.20, relever le résultat, puis contrôler le service glpi-agent et ses journaux. 
+En cas d’échec, affecter le ticket au groupe Administrateurs N2 avec la preuve du test.
+
+□ Symptômes observables et périmètre concerné 
+
+La connexion à l'interface web de GLPI n'est pas accessible via son nom DNS "glpi.meridian.lan"
+
+(photo 09_article_glpi_panne-dns-glpi.meridian.lano)
+
+□ Pré-requis et droits nécessaires
+
+Accès à la VM Linux
+Login : Identifiant, mdp pour accéder au fichier /etc/resolv.conf
+
+□ Procédure numérotée de vérification
+
+1. Faire un ping de l'IP du serveur cible
+2. Faire un nslookup glpi.meridian.lan et un ping du DNS (ping glpi.meridian.lan)
+3. Si ni le ping IP fonctionne ni le ping DNS -> consulter le fichier /etc/resolv.conf
+4. Vérifier que l'IP du serveur est correcte (nameserver 10.10.20.10)
+5. Vérifier le status du serveur GLPI : systemctl status glpi
+6. Vérifier le fichier /etc/apache2/sites-available/glpi.conf
+
+(4 photos 09_article_glpi)
+
+□ Actions de résolution et précautions
+
+1. Enregistrer dans le fichier /etc/resolv.conf : nameserver 10.10.20.10
+2. Enregistrer la configuration : "systemctl restart networking"
+3. Corriger l'erreur du nom "glpi.meridian.lan" au lieu de "glpi.meridian.lano" dans /etc/apache2/sites-available/glpi.conf 
+4. Relancer le serveur apache2 : systemctl start apache2, il a peut-être été stoppé.
+
+(1 photo 09_article_glpi_status)
+
+□ Tests de validation et escalade N2
+
+1. ping glpi.meridian.lan
+2. nslookup glpi.meridian.lan
+3. Tester l'interface web : glpi.meridian.lan
+4. En cas d'échec, escalader le ticket au N2 dans attribué à : Administrateur N2
+
+(3 photos 09_article_glpi)
+
+□ Date, auteur, version et mots-clés
+
+Fait le 17 Novembre 2026
+
+Version de GLPI : sudo mariadb glpi -e "SELECT value FROM glpi_configs WHERE context='core' AND name='version';"
+
+Version agent GLPI : sudo glpi-agent --version 
+Version de Linux : lsb_release -a
+
+(3 photos 09_article_glpi)
