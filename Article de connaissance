@@ -1,1 +1,5 @@
+Diagnostiquer une erreur DNS sur une VM Linux
 
+Public cible : Technicien support N1
+
+Depuis PAR-LNX-01, tester l’accès à http://10.10.20.20, relever le résultat, puis contrôler le service glpi-agent et ses journaux. En cas d’échec, affecter le ticket au groupe Administrateurs N2 avec la preuve du test.
